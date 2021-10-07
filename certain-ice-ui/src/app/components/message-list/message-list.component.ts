@@ -18,57 +18,41 @@ export class MessageListComponent implements OnInit {
   public channel: any;
   public msgCount = 0;
   public sender = false;
-  constructor(public messageService: MessageService) {}
+  constructor(public messageService: MessageService) { }
 
   ngOnInit() {
     this.consumer = ActionCable.createConsumer(`ws://localhost:3000/cable`);
     this.channel = this.consumer.subscriptions.create('ActionchatChannel', {
       connected() {
-        console.log('Channel subscribed on page load!', this.channel);
       },
       disconnected() {
-        // console.log('Service terminated by WB server');
       },
-      received: () => this.retrieveMessages(),
+      received: (msgContent: any) => this.retrieveMessages(msgContent),
     });
-    // This is no longer being used because the above gets called everytime the page is updated - thereby calling retrieve
-    // this.retrieveMessages();
   }
 
   ngAfterViewInit() {
     this.messageService.query().subscribe((messages: Message[]) => {
       this.msgCount = messages.length;
-      console.log("### Run first time only! #### Message length: ", messages.length, " MessageCount: ", this.msgCount);
       this.messages.push(...messages);
     });
   }
 
-  public addMessage(content: string) {
-    const data = {
-      content: content,
-    };
+  public addMessage(content: object) {
     this.messageService
-      .create(undefined, data)
+      .create(undefined, content)
       .subscribe((message: Message) => {
         this.messages.push(message);
       });
   }
 
-  public retrieveMessages(): void {
-    this.messageService.query().subscribe((messages: Message[]) => {
-      console.log("Retrieve called. Message length: ", messages.length, " MessageCount: ", this.msgCount);
-      if (messages.length != this.msgCount && this.sender == false ) {
-        this.msgCount = messages.length;
-        this.messages.push(...messages);
-      }
-      this.sender = false;
-    });
+  public retrieveMessages(msgContent: any) {
+      this.addMessage(msgContent);
   }
 
-  public sendMessage(data: string) {
+  public sendMessage(msgContent: string) {
     this.sender = true;
-    this.channel.send({ message: data });
-    this.addMessage(data);
+    this.channel.send({ content: msgContent });
   }
 
   public deleteMessage(message: Message) {
