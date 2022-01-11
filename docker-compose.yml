@@ -16,7 +16,7 @@ services:
       DEV_DB_PASSWORD: pwd
       DEV_DB_HOST: certain-ice-dev-db
     command:
-      /bin/bash -c 'rm /api/tmp/pids/server.pid && rails s -b 0.0.0.0'
+      /bin/bash -c 'rails s -b 0.0.0.0'
   ui:
     container_name: certain-ice-ui
     build: ./certain-ice-ui
