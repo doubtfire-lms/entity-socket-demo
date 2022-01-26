@@ -1,5 +1,5 @@
 import { HttpHeaders } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, NgModule, OnInit } from "@angular/core";
 import { Message } from "src/app/model/message";
 import { MessageService } from "src/app/model/message.service";
 import * as ActionCable from 'actioncable';
@@ -8,19 +8,27 @@ import * as ActionCable from 'actioncable';
   selector: 'message-list',
   templateUrl: 'message-list.component.html',
   styleUrls: ['message-list.component.css'],
+  providers:[MessageService],
 })
 export class MessageListComponent implements OnInit {
   messages: Message[] = new Array<Message>();
   private consumer: any;
-  private channel: any;
+  private channel: any; 
+  user!: String;
+  room!: String;
   editdata:any;
+  messageArray:Array<{user:String, message:String}> = [];
   isEdit:boolean=false;
   constructor(
     private messageService: MessageService
   ) {
+    this.messageService.newUserJoined('new user joined').subscribe(data =>this.messageArray.push(data));
   }
-
-  ngOnInit() {
+  join(){
+    this.messageService.joinRoom('join',{user:this.user,room:this.room});
+  }
+  ngOnInit() 
+  {
     this.consumer = ActionCable.createConsumer(`ws://localhost:3000/cable`);
     this.channel = this.consumer.subscriptions.create('ChatChannel', {
       connected() {
@@ -35,34 +43,36 @@ export class MessageListComponent implements OnInit {
     this.messageService.query().subscribe(
       (messages: Message[]) => {
         this.messages.push(...messages);
-      }
-    );
+    });
+    this.messageService.newUserJoined('message').subscribe((data: any)=>{
+      console.log(data)
+    })
   }
 
-  public addMessage(content: string) {
+  public addMessage(content: string) 
+  {
     const data = {
       content: content,
     }
 
-    // let u: message = this.messages[0];
-    // this.messageService.put<message>(u).subscribe( (message: message) => {console.log(message)} );
     this.messageService.create(data).subscribe(
       (message: Message) => {
         this.messages.push(message);
-      }
-    );
+    });
   }
 
-  public deleteMessage(message: Message) {
+  public deleteMessage(message: Message) 
+  {
     this.messageService.delete(message).subscribe( (response : any) => { this.messages = this.messages.filter( (u: Message) => u.id != message.id ) } );
   }
 
-   public editMessage(message: Message) {
+  public editMessage(message: Message) 
+  {
     this.isEdit=true;
     this.editdata=message;
- }
+  }
 
-  saveEditMessage(editdata:string){
+  public saveEditMessage(editdata:string){
     this.isEdit=false;
     this.editdata.content=editdata;
         const data = {
