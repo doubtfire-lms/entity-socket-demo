@@ -24,11 +24,15 @@ export class MessageListComponent implements OnInit {
   constructor(
     private messageService: MessageService
   ) {
-    this.messageService.newUserJoined('new user joined').subscribe(data =>this.userArray.push(data));
-    this.messageService.newMessageCreated().subscribe(data =>this.messageArray.push(data));
+    this.messageService.listen('new user joined').subscribe(data =>this.userArray.push(data));
+    this.messageService.listen('user left room').subscribe(data =>this.userArray.push(data));
+    this.messageService.listen('new message created').subscribe(data =>this.userArray.push(data));
   }
   join(){
     this.messageService.emit('join',{user:this.user,room:this.room});
+  }
+  leave(){
+    this.messageService.emit('leave',{user:this.user,room:this.room});
   }
   ngOnInit() 
   {
@@ -47,7 +51,7 @@ export class MessageListComponent implements OnInit {
       (messages: Message[]) => {
         this.messages.push(...messages);
     });
-    this.messageService.newUserJoined('message').subscribe((data: any)=>{
+    this.messageService.listen('message').subscribe((data: any)=>{
       console.log(data)
     })
   }
@@ -57,7 +61,7 @@ export class MessageListComponent implements OnInit {
     const data = {
       content: content,
     }
-    this.messageService.emit('socketMessage',{userMessage:this.userMessage});
+    this.messageService.emit('socketMessage',{user:this.user, room:this.room, userMessage:this.userMessage});
     this.messageService.create(data).subscribe(
       (message: Message) => {
         this.messages.push(message);

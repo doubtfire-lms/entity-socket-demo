@@ -18,18 +18,9 @@ export class MessageService extends EntityService<Message> {
     super(httpClient, API_URL);
   }
 
-  newUserJoined(eventName: string){
+  listen(eventName: string){
     let observable =  new Observable<{user:String,message:String}>((subscriber) =>{
         this.socket.on(eventName, (data: any)=>{
-            subscriber.next(data);
-        })
-        return () => {this.socket.disconnect();}
-    });
-    return observable;
-  }
-  newMessageCreated(){
-    let observable =  new Observable<{message:String}>((subscriber) =>{
-        this.socket.on('new message created', (data: any)=>{
             subscriber.next(data);
         })
         return () => {this.socket.disconnect();}
