@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 
 import { UserService } from './model/user.service';
 import { MessageService } from './model/message.service';
-
+import { FormsModule } from "@angular/forms";
 import { UserListComponent } from './components/user-list/user-list.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
 
@@ -18,7 +18,8 @@ import { MessageListComponent } from './components/message-list/message-list.com
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     UserService,
