@@ -16,16 +16,19 @@ export class MessageListComponent implements OnInit {
   private channel: any; 
   user!: String;
   room!: String;
+  userMessage!: String;
   editdata:any;
-  messageArray:Array<{user:String, message:String}> = [];
+  userArray:Array<{user:String, message:String}> = [];
+  messageArray:Array<{message:String}> = [];
   isEdit:boolean=false;
   constructor(
     private messageService: MessageService
   ) {
-    this.messageService.newUserJoined('new user joined').subscribe(data =>this.messageArray.push(data));
+    this.messageService.newUserJoined('new user joined').subscribe(data =>this.userArray.push(data));
+    this.messageService.newMessageCreated().subscribe(data =>this.messageArray.push(data));
   }
   join(){
-    this.messageService.joinRoom('join',{user:this.user,room:this.room});
+    this.messageService.emit('join',{user:this.user,room:this.room});
   }
   ngOnInit() 
   {
@@ -54,7 +57,7 @@ export class MessageListComponent implements OnInit {
     const data = {
       content: content,
     }
-
+    this.messageService.emit('socketMessage',{userMessage:this.userMessage});
     this.messageService.create(data).subscribe(
       (message: Message) => {
         this.messages.push(message);

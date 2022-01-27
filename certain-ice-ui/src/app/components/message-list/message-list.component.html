@@ -30,7 +30,7 @@
 
     <div class="row">
         <div class="well" style="height:200px; padding:15px;">
-            <div *ngFor="let item of messageArray">
+            <div *ngFor="let item of userArray">
             <span><strong>{{item.user}} : </strong> {{item.message}}</span>
             </div>
         </div>
@@ -40,18 +40,30 @@
   <h3>Create Message</h3>
   <div class="input-group mb-3">
     <span class="input-group-text" id="basic-addon1">Content</span>
-    <input type="text" class="form-control" placeholder="Message" aria-label="Username" aria-describedby="basic-addon1"
+    <input type="text" [(ngModel)]="userMessage" class="form-control" placeholder="Message" aria-label="Username" aria-describedby="basic-addon1"
       #content>
     <button class="btn btn-outline-secondary" type="button" id="button-addon2"
       (click)="addMessage(content.value)">Add</button>
   </div>
   <div *ngIf="isEdit"class="input-group mb-3">
     <span class="input-group-text" id="basic-addon1">Edit Content id : {{editdata.id}}</span>
-    <input type="text" class="form-control" [value]="editdata.content" placeholder="Message" aria-label="Username" aria-describedby="basic-addon1"
+    <input type="text"  class="form-control" [value]="editdata.content" placeholder="Message" aria-label="Username" aria-describedby="basic-addon1"
       #content>
     <button class="btn btn-outline-secondary" type="button" id="button-addon2"
       (click)="saveEditMessage(content.value)">Save edit changes</button>
   </div>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Content</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let item of messageArray">
+      <tr class="table-light">
+        <td>{{item.message}}</td>
+    </tbody>
+  </table>
 
   <table class="table table-hover">
     <thead>

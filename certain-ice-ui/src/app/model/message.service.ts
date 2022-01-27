@@ -27,7 +27,16 @@ export class MessageService extends EntityService<Message> {
     });
     return observable;
   }
-  joinRoom(eventName:string , data: any){
+  newMessageCreated(){
+    let observable =  new Observable<{message:String}>((subscriber) =>{
+        this.socket.on('new message created', (data: any)=>{
+            subscriber.next(data);
+        })
+        return () => {this.socket.disconnect();}
+    });
+    return observable;
+  }
+  emit(eventName:string , data: any){
     this.socket.emit(eventName, data);
   }
 
