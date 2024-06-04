@@ -20,12 +20,17 @@
       #password>
     <button class="btn btn-outline-secondary" type="button" id="button-addon2"
       (click)="addUser(username.value, name.value, password.value)">Add User</button>
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2"
+      (click)="getOrCreate(username.value, name.value, password.value)">Get/Create</button>
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2"
+      (click)="getOrCreate(username.value, name.value, password.value, false)">Get/Create No Update</button>
   </div>
 
   <div class="d-grid gap-2 d-md-flex">
     <button type="button" class="btn btn-outline-dark" (click)="refreshData()">Refresh</button>
     <button type="button" class="btn btn-outline-dark" (click)="refreshData('a')">Refresh start a</button>
     <button type="button" class="btn btn-outline-dark" (click)="refreshData('a', true)">Refresh start a - all</button>
+    <button type="button" class="btn btn-outline-dark" (click)="clearCache()">Clear Cache</button>
   </div>
 </div>
 
@@ -33,6 +38,7 @@
   <table class="table table-hover">
     <thead>
       <tr>
+        <th scope="col">Id</th>
         <th scope="col">Username</th>
         <th scope="col">Name</th>
         <th scope="col">Actions</th>
@@ -41,6 +47,7 @@
     </thead>
     <tbody *ngFor="let user of users">
       <tr class="table-light">
+        <th scope="row">{{user.id}}</th>
         <th scope="row">{{user.username}}</th>
         <td>{{user.name}}</td>
         <td><button type="button" class="btn btn-secondary btn-sml" (click)="deleteUser(user)">Delete</button>

@@ -20,6 +20,11 @@ export class UserListComponent implements OnInit {
     this.refreshData();
   }
 
+  public clearCache() {
+    this.userService.cache.clear();
+    this.users.length = 0;
+  }
+
   public refreshData(value?: string, all: boolean = false) {
     let options : RequestOptions<User> = {};
     if (value) {
@@ -35,9 +40,21 @@ export class UserListComponent implements OnInit {
     this.userService.query(undefined, options).subscribe(
       (users: User[]) => {
         this.users.length = 0;
-        this.users.push(...users);
+        users.forEach( (user: User) => {
+          this.users.push(user);
+        });
       }
     );
+  }
+
+  getOrCreate(username: string, name: string, password: string, update: boolean | undefined = undefined) {
+    let user: User = this.userService.cache.getOrCreate(username, this.userService, {username: username, name: name, password: password}, {updateOnCacheRead: update});
+
+    if (this.users.findIndex( (u: User) => u.id === user.id ) == -1) {
+      this.users.push(user);
+    } else {
+      console.log('User already exists');
+    }
   }
 
   public addUser(username: string, name: string, password: string) {
