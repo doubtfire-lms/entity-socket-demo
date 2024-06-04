@@ -1,8 +1,9 @@
-FROM ruby:3
+FROM ruby:3.3
 
 WORKDIR /api
 
 RUN gem install bundler
+
 
 # Install the Gems
 COPY ./Gemfile ./Gemfile.lock /api/
