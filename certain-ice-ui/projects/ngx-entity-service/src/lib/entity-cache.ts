@@ -151,6 +151,9 @@ export class EntityCache<T extends Entity> {
     let entity: T;
     if ( this.has(key) ) {
       entity = this.get(key) as T;
+      if (options?.updateOnCacheRead !== false) {
+        entity.updateFromJson(data, service.mapping);
+      }
     } else {
       // Create the instance with no request options, using the mapping parameters
       entity = service.buildInstance(data, options);

@@ -131,4 +131,12 @@ export interface RequestOptions<T extends Entity> {
    * asynchronous operations in the mapping process.
    */
   mappingCompleteCallback?: (entity: T) => void;
+
+  /**
+   * Optionally update the entity object with details from the json request in getOrCreate - defaults to true.
+   * This is used to ensure that entity objects have the latest fetched details when we can get or create
+   * the entity. This request will have the details to create an entity, and this can be used to update the
+   * entity object from the cache when it already exists.
+   */
+  updateOnCacheRead?: boolean;
 }
