@@ -5,6 +5,7 @@ This library was generated with [Angular CLI](https://github.com/angular/angular
 ```[bash]
 npm run ng build ngx-entity-service
 cd dist/ngx-entity-service
+npm adduser
 npm publish
 ```
 
