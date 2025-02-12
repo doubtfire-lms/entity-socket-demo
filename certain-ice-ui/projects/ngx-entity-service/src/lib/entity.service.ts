@@ -130,6 +130,9 @@ export abstract class EntityService<T extends Entity> {
 
     if (cache && cache.has(this.keyForJson(json))) {
       result = cache.get(this.keyForJson(json)) as T;
+    } else if (options?.entity) {
+      // Use the entity passed in to the options - allows for user to pass in the object to use as the new entity
+      result = options.entity;
     } else {
       const constructorParams = options?.constructorParams || mapping.constructorParams;
 
