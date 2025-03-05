@@ -112,6 +112,12 @@ export abstract class CachedEntityService<T extends Entity> extends EntityServic
     const cache = this.cacheFor(options);
     const queryKey = this.queryKey(pathIds, options);
 
+    if (!options) {
+      options = {};
+    }
+    // Set cache - will be this cache or cache from options (ensure object creation uses cache)
+    options.cache = cache;
+
     if (cache.ranQuery(queryKey) ) {
       // Ensure callback on get from cache
       const onCompleteCallback = options?.mappingCompleteCallback || this.mapping.mappingCompleteCallback;
@@ -133,6 +139,12 @@ export abstract class CachedEntityService<T extends Entity> extends EntityServic
   public fetch(pathIds: any, options?: RequestOptions<T>): Observable<T> {
     const key: string = this.keyFromPathIds(pathIds);
     const cache = this.cacheFor(options);
+
+    if (!options) {
+      options = {};
+    }
+    // Set cache - will be this cache or cache from options (ensure object creation uses cache)
+    options.cache = cache;
 
     return super.get(pathIds, options).pipe(tap((entity: T) => cache.set(entity.key, entity)));
   }
@@ -182,6 +194,13 @@ export abstract class CachedEntityService<T extends Entity> extends EntityServic
       return of(entity);
     } else {
       // We haven't run this query, so run it and cache the result
+      // We must make sure the cache is set
+      if (!options) {
+        options = {};
+      }
+      // Set cache - will be this cache or cache from options
+      options.cache = cache;
+
       return cache.registerGetQuery(
         queryKey,
         super.get(pathIds, options).pipe(
