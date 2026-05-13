@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Message, MessageKind } from '../model/message';
 import API_URL from './apiURL';
-import { CachedEntityService, Entity } from 'projects/ngx-entity-service/src/public-api';
-import { MappingProcess } from 'projects/ngx-entity-service/src/lib/mapping-process';
+import { CachedEntityService, Entity, MappingProcess } from 'projects/ngx-entity-service/src/public-api';
 
 @Injectable()
 export class MessageService extends CachedEntityService<Message> {
